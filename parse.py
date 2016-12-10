@@ -7,12 +7,12 @@ from datetime import datetime
 from lxml import html, etree
 from pymongo import MongoClient
 
-CLIENT = MongoClient()
+DB = MongoClient()['airData']
 LOCATIONS = ['mm', 'av', 'pb', 'rkPuram', 'airpo', 'civilLines']
 DATA_SOURCE_URL = 'http://www.dpccairdata.com/dpccairdata/display/'
 LOCATION_NAME_FILE_POSTFIX = 'View15MinData.php'
 # Reload rate = minutes * 60 (secs)
-RELOAD_RATE = 15*60
+RELOAD_RATE = 15
 
 while True:
     for location in LOCATIONS:
@@ -50,12 +50,13 @@ while True:
             parsed_data[5] = date_obj.strftime("%Y-%m-%d %H:%M:%S")
             response.append([parsed_data[0], parsed_data[3], parsed_data[4], parsed_data[5]])
 
-        response_obj['time'] = response[0][3]
-        response_obj['location'] = location
+        response_obj['_id'] = response[0][3] + ' ' + location
         for pollutant in response:
             response_obj[pollutant[0]] = pollutant[1]
 
-        print "For location {} :".format(location)
-        print response_obj
+        try:
+            DB.pollutionEntry.insert_one(response_obj)
+        except DuplicateKeyError:
+            pass
 
     time.sleep(RELOAD_RATE)
