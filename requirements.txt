@@ -1,0 +1,10 @@
+click==6.6
+Flask==0.11
+Flask-Cors==2.1.2
+itsdangerous==0.24
+Jinja2==2.8
+MarkupSafe==0.23
+MySQL-python==1.2.5
+PyMySQL==0.7.9
+six==1.10.0
+Werkzeug==0.11.11
