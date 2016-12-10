@@ -4,6 +4,7 @@ from flask import Flask, request, redirect
 from flask_cors import CORS
 
 
+from utils import *
 from mysql_config import HOSTNAME, USERNAME, PASSWORD, DATABASE
 
 
@@ -19,6 +20,9 @@ db = MySQLdb.connect(
 )
 
 cursor = db.cursor()
+
+FIXED_DISTANCE = 1000
+
 
 @app.route("/add-user", methods=["GET"])
 def adduser():
@@ -47,11 +51,11 @@ def adduser():
 
 @app.route("/add-message", methods=["POST"])
 def addmessage():
-	user_id = int(request.args.get("user_id"))
-	lon = float(request.args.get("lon"))
-	lat = float(request.args.get("lat"))
-	message = request.args.get("message")
-	channel = request.args.get("channel")
+	user_id = int(request.form.get("user_id"))
+	lon = float(request.form.get("lon"))
+	lat = float(request.form.get("lat"))
+	message = request.form.get("message")
+	channel = request.form.get("channel")
 
 	query = "INSERT INTO `messages` (user_id, message, lon, lat, channel) VALUES ('%d','%s','%f','%f','%s')" % (user_id, message, lon, lat, channel)
 
@@ -71,34 +75,42 @@ def addmessage():
 	return json.dumps(response_json)
 
 
-@app.route("/get-messages", methods=["GET"])
+@app.route("/get-message", methods=["GET"])
 def getmessage():
 	lat = float(request.args.get("lat"))
 	lon = float(request.args.get("lon"))
 	channel = request.args.get("channel")
 
-	ans = []
-	query = "SELECT messages.id, messages.message, messages.score, messages.timestamp, users.name FROM `messages` INNER JOIN `users` ON messages.user_id = users.id WHERE messages.lon = '%f' AND messages.lat = '%f' AND messages.channel = '%s' ORDER BY messages.timestamp DESC" % (lat, lon, channel)
+	response_json = []
+	query = "SELECT messages.id, messages.message, messages.score, messages.timestamp, users.name, messages.lat, messages.lon \
+		FROM `messages` INNER JOIN `users` ON messages.user_id = users.id \
+		WHERE messages.channel='%s' \
+		ORDER BY messages.timestamp DESC" % (channel)
 
-	try:
-		cursor.execute(query)
+	cursor.execute(query)
+	row = cursor.fetchone()
+
+	while row is not None:
+		
+		message_lat = row[5]
+		message_lon = row[6]
+		message_score = int(row[2])
+
+		approved_distance = FIXED_DISTANCE + message_score
+
+		if(dist_between_coord(lat, lon, message_lat, message_lon) < approved_distance):
+			temp_obj = {
+				'id' : int(row[0]),
+				'message' : row[1],
+				'score' : message_score,
+				'author' : row[4],
+				'timestamp' : row[3].strftime('%m/%d/%Y'),
+			}
+			response_json.append(temp_obj)
+
 		row = cursor.fetchone()
 
-		while row is not None:
-			ans.append(row)
-			row = cursor.fetchone()
-
-	except e:
-		db.rollback()
-		success = False
-
-	# response_json = {
-	# 	"success" : success,
-	# 	"message_id" : message_id,
-	# }
-	return json.dumps(ans)
-
-
+	return json.dumps(response_json)
 
 
 @app.route('/', methods=['GET'])
