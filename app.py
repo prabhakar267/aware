@@ -1,6 +1,6 @@
 import json
 import MySQLdb
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, render_template
 from flask_cors import CORS
 
 
@@ -24,9 +24,9 @@ cursor = db.cursor()
 FIXED_DISTANCE = 1000
 
 
-import logging
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+# import logging
+# log = logging.getLogger('werkzeug')
+# log.setLevel(logging.ERROR)
 
 
 
@@ -74,9 +74,13 @@ def addmessage():
 		db.commit()
 		message_id = cursor.lastrowid
 		success = True
-	except e:
+	except Exception, e:
 		db.rollback()
 		success = False
+
+		print "\n\n\n\n"
+		print str(e)
+		print "\n\n\n\n"
 
 	response_json = {
 		"success" : success,
@@ -95,12 +99,12 @@ def getmessage():
 	if tag == 0:
 		query = "SELECT messages.id, messages.message, messages.score, messages.timestamp, users.name, messages.lat, messages.lon, messages.tags \
 			FROM `messages` INNER JOIN `users` ON messages.user_id = users.id \
-			ORDER BY messages.timestamp DESC"
+			ORDER BY messages.timestamp ASC"
 	else:
 		query = "SELECT messages.id, messages.message, messages.score, messages.timestamp, users.name, messages.lat, messages.lon, messages.tags \
 			FROM `messages` INNER JOIN `users` ON messages.user_id = users.id \
 			WHERE messages.tags LIKE '%%%d%%' \
-			ORDER BY messages.timestamp DESC" % (tag)
+			ORDER BY messages.timestamp ASC" % (tag)
 
 	cursor.execute(query)
 	row = cursor.fetchone()
@@ -155,9 +159,34 @@ def messagevote(message_id, score):
 # HUMAN BODY GRAPHIC ROUTES #
 #############################
 
-@app.route("/current-index", methods=["GET"])
+@app.route("/current-index/", methods=["GET"])
 def currentindex():
-	return json.dumps(get_current_stats())
+	scores = get_current_stats()
+	response_json = []
+
+	titles = ['Sulphur Dioxide', 'Oxides of Nitrogen', 'Carbon Monoxide', "Ozone", "Benzene", "Ammonia"]
+	highs = [10, 70, 3, 60, 4.5, 50]
+	lows = [8, 50, 2, 50, 3.5, 40]
+
+	ctr = 0
+	for title in titles:
+		if scores[title] >= highs[ctr]:
+			level = 3
+		elif scores[title] <= lows[ctr]:
+			level = 1
+		else:
+			level = 2
+
+		temp_obj = {
+			'title' : title,
+			'score' : scores[title],
+			'level' : level,
+		}
+
+		response_json.append(temp_obj)
+		ctr += 1
+
+	return json.dumps(response_json)
 
 
 ##################
@@ -192,16 +221,44 @@ def gettoppriorities(number_of_messages):
 	return json.dumps(response_json)
 
 
+@app.route("/get-all-messages", methods=["GET"])
+def getallmessages():
+	response_json = []
+
+	query = "SELECT score, lat, lon \
+		FROM `messages` \
+		WHERE 1 \
+		ORDER BY lat DESC"
+
+	cursor.execute(query)
+	row = cursor.fetchone()
+
+	while row is not None:
+		temp_obj = {
+			'lat' : float(row[1]),
+			'lon' : float(row[2]),
+			'score' : int(row[0]),
+		}
+		response_json.append(temp_obj)
+
+		row = cursor.fetchone()
+
+	return json.dumps(response_json)
+
+
+@app.route('/dashboard/heatmap', methods=["GET"])
+def testroute():
+	return render_template('heatmap.html')
+
+
 #####################
 # GREEN PATH ROUTES #
 #####################
 
-@app.route("/select-route", methods=["GET"])
-def selectroute():
-	# return json.dumps(get_current_stats())
-	return get_damage(28.6288, 77.2223), 200
-
-
+# @app.route("/select-route", methods=["GET"])
+# def selectroute():
+# 	# return json.dumps(get_current_stats())
+# 	return get_damage(28.6288, 77.2223), 200
 
 
 

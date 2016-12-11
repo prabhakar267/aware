@@ -4,6 +4,8 @@ from datetime import datetime
 from lxml import html, etree
 from math import sqrt
 
+from constants import temp_response_dpcc
+
 def dist_between_coord(x1,y1,x2,y2):
 	return sqrt( (x2 - x1)**2 + (y2 - y1)**2 )
 
@@ -11,6 +13,7 @@ def dist_between_coord(x1,y1,x2,y2):
 def get_current_stats():
 	DATA_SOURCE_URL = 'http://www.dpccairdata.com/dpccairdata/display/mm'
 	LOCATION_NAME_FILE_POSTFIX = 'View15MinData.php'
+	response1_obj = temp_response_dpcc
 
 	response = []
 	response_obj = {}
@@ -51,11 +54,11 @@ def get_current_stats():
 		response.append([parsed_data[0], parsed_data[3], parsed_data[4], parsed_data[5]])
 
 	for pollutant in response:
-		print pollutant[0] + "\t" + pollutant[1] + "\n\n\n\n"
+		# print pollutant[0] + "\t" + pollutant[1] + "\n\n\n\n"
 		response_obj[pollutant[0]] = pollutant[1]
 
 
-	return response_obj
+	return response1_obj
 
 
 def get_damage(latitude, longitude):

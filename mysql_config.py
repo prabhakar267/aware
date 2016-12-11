@@ -1,4 +1,4 @@
-HOSTNAME = "103.21.59.7"
-USERNAME = "csinseew_clean_a"
-PASSWORD = "aloogobhi123"
+HOSTNAME = "localhost"
+USERNAME = "root"
+PASSWORD = "696163"
 DATABASE = "csinseew_clean_air"
