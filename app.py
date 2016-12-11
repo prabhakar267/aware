@@ -24,6 +24,12 @@ cursor = db.cursor()
 FIXED_DISTANCE = 1000
 
 
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+
+
 ###############
 # USER ROUTES #
 ###############
@@ -96,8 +102,6 @@ def getmessage():
 			WHERE messages.tags LIKE '%%%d%%' \
 			ORDER BY messages.timestamp DESC" % (tag)
 
-		# return query, 200
-
 	cursor.execute(query)
 	row = cursor.fetchone()
 
@@ -154,6 +158,7 @@ def messagevote(message_id, score):
 @app.route("/current-index", methods=["GET"])
 def currentindex():
 	return json.dumps(get_current_stats())
+
 
 ##################
 # CONSOLE ROUTES #

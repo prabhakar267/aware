@@ -8,16 +8,7 @@ def dist_between_coord(x1,y1,x2,y2):
 	return sqrt( (x2 - x1)**2 + (y2 - y1)**2 )
 
 
-# import time
-# from pymongo import MongoClient, errors
-
-# DB = MongoClient()['airData']
-# LOCATIONS = ['mm', 'av', 'pb', 'rkPuram', 'airpo', 'civilLines']
-# Reload rate = minutes * 60 (secs)
-# RELOAD_RATE = 15*60
-
 def get_current_stats():
-	# for location in LOCATIONS:
 	DATA_SOURCE_URL = 'http://www.dpccairdata.com/dpccairdata/display/mm'
 	LOCATION_NAME_FILE_POSTFIX = 'View15MinData.php'
 
@@ -60,6 +51,7 @@ def get_current_stats():
 		response.append([parsed_data[0], parsed_data[3], parsed_data[4], parsed_data[5]])
 
 	for pollutant in response:
+		print pollutant[0] + "\t" + pollutant[1] + "\n\n\n\n"
 		response_obj[pollutant[0]] = pollutant[1]
 
 
