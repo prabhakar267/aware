@@ -58,7 +58,6 @@ public class Bulletin extends Fragment implements Constants{
     private Button sendBtn, tagBtn;
     private ChatAdapter adapter;
     SharedPreferences s;
-    SharedPreferences.Editor e;
     String uid;
     String curTags="";
     ProgressDialog progress;
@@ -115,14 +114,11 @@ public class Bulletin extends Fragment implements Constants{
                         .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-
                                 curTags = "";
 
                                 for (int i = 0; i < which.length; i++) {
-                                    curTags = curTags + which[i];
-
+                                    curTags = curTags + (which[i]+1);
                                 }
-
                                 return true;
                             }
                         })
@@ -180,7 +176,6 @@ public class Bulletin extends Fragment implements Constants{
      * Get chat
      */
     public void getChat() {
-
 
         String lat,lon;
         gpsTracker = new GPSTracker(activity);
@@ -246,9 +241,7 @@ public class Bulletin extends Fragment implements Constants{
                                 Log.e("dispalyin",ob.getString("message"));
 
                                 displayMessage(chatMessage);
-
                             }
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -286,7 +279,7 @@ public class Bulletin extends Fragment implements Constants{
 
         // to fetch city names
         String uri = API_LINK + "add-message";
-        Log.e("executing", uri + " " + uid);
+        Log.e("executing", uri + " " + uid + " " + curTags);
 
         //Set up client
         OkHttpClient client = new OkHttpClient();
@@ -389,7 +382,7 @@ public class Bulletin extends Fragment implements Constants{
                             tagsShow = "";
 
                             for (int i = 0; i < which.length; i++) {
-                                tagsShow = tagsShow + which[i];
+                                tagsShow = tagsShow + (which[i]+1);
 
                             }
 

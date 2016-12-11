@@ -2,7 +2,6 @@ package com.americanminion;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.IOException;
 
@@ -25,7 +26,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class Home extends Fragment implements Constants{
+public class Home extends Fragment implements Constants {
 
     Activity activity;
     private Handler mHandler;
@@ -75,14 +76,13 @@ public class Home extends Fragment implements Constants{
     }
 
 
-
     /**
      * Upload data to server
      */
     public void vote(final View v) {
 
         // to fetch city names
-        String uri = API_LINK + "/current-index/";
+        String uri = API_LINK + "current-index/";
         Log.e("CALLING : ", uri);
 
         //Set up client
@@ -107,23 +107,78 @@ public class Home extends Fragment implements Constants{
                     @Override
                     public void run() {
 
-                        WaveLoadingView mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.sulphur);
-                        setWave(mWaveLoadingView, R.color.level1, "Sulphur Dioxide",10);
-                        mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.nitrogen);
-                        setWave(mWaveLoadingView, R.color.level2, "Oxides of nitrogen",20);
-                        mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.carbon);
-                        setWave(mWaveLoadingView, R.color.level3, "Carbon monoxide",30);
-                        mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.ozone);
-                        setWave(mWaveLoadingView, R.color.level4, "Ozone",40);
-                        mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.benzene);
-                        setWave(mWaveLoadingView, R.color.level5, "Benzene",50);
-                        mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.ammonia);
-                        setWave(mWaveLoadingView, R.color.level1, "Ammonia",60);
+                        try {
+                            JSONArray array = new JSONArray(res);
+
+                            WaveLoadingView mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.sulphur);
+                            setWave(mWaveLoadingView,
+                                    decideColor(array.getJSONObject(0).getString("level")),
+                                    "Sulphur Dioxide",
+                                    decideProgress(array.getJSONObject(0).getString("level")));
+                            mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.nitrogen);
+                            setWave(mWaveLoadingView,
+                                    decideColor(array.getJSONObject(1).getString("level")),
+                                    "Oxides of nitrogen",
+                                    decideProgress(array.getJSONObject(1).getString("level")));
+                            mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.carbon);
+                            setWave(mWaveLoadingView,
+                                    decideColor(array.getJSONObject(2).getString("level")),
+                                    "Carbon monoxide",
+                                    decideProgress(array.getJSONObject(2).getString("level")));
+                            mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.ozone);
+                            setWave(mWaveLoadingView,
+                                    decideColor(array.getJSONObject(3).getString("level")),
+                                    "Ozone",
+                                    decideProgress(array.getJSONObject(3).getString("level")));
+                            mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.benzene);
+                            setWave(mWaveLoadingView,
+                                    decideColor(array.getJSONObject(4).getString("level")),
+                                    "Benzene",
+                                    decideProgress(array.getJSONObject(4).getString("level")));
+                            mWaveLoadingView = (WaveLoadingView) v.findViewById(R.id.ammonia);
+                            setWave(mWaveLoadingView,
+                                    decideColor(array.getJSONObject(5).getString("level")),
+                                    "Ammonia",
+                                    decideProgress(array.getJSONObject(5).getString("level")));
+
+                        } catch (JSONException e) {
+                            Log.e("ERROR", e.getMessage());
+                        }
 
                     }
                 });
             }
         });
     }
+
+
+    int decideColor(String level) {
+
+        if (level.equals("1"))
+            return R.color.level1;
+        if (level.equals("2"))
+            return R.color.level2;
+        if (level.equals("3"))
+            return R.color.level3;
+
+        return R.color.level1;
+    }
+
+
+    int decideProgress(String level) {
+
+        Log.e(":gee",level);
+
+
+        if (level.equals("1"))
+            return 30;
+        if (level.equals("2"))
+            return 60;
+        if (level.equals("3"))
+            return 90;
+
+        return 30;
+    }
+
 
 }

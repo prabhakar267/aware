@@ -2,7 +2,6 @@ package com.americanminion;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -13,10 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +25,7 @@ import okhttp3.Response;
 /**
  * Created by Technovibe on 17-04-2015.
  */
-public class ChatAdapter extends BaseAdapter implements Constants{
+public class ChatAdapter extends BaseAdapter implements Constants {
 
     private final List<ChatMessage> chatMessages;
     private Activity context;
@@ -88,31 +83,53 @@ public class ChatAdapter extends BaseAdapter implements Constants{
         String x = chatMessage.getTags();
 
         if (x != null) {
+
+
+            Log.e("message", x + " ");
+
             if (x.contains("1"))
                 holder.tag1.setVisibility(View.VISIBLE);
+            else
+                holder.tag1.setVisibility(View.GONE);
             if (x.contains("2"))
                 holder.tag2.setVisibility(View.VISIBLE);
+            else
+                holder.tag1.setVisibility(View.GONE);
             if (x.contains("3"))
                 holder.tag3.setVisibility(View.VISIBLE);
+            else
+                holder.tag1.setVisibility(View.GONE);
             if (x.contains("4"))
                 holder.tag4.setVisibility(View.VISIBLE);
+            else
+                holder.tag1.setVisibility(View.GONE);
             if (x.contains("5"))
                 holder.tag5.setVisibility(View.VISIBLE);
+            else
+                holder.tag1.setVisibility(View.GONE);
         }
 
         holder.downvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                vote("-1", Long.toString(chatMessage.getId()), holder.downvote);
+                vote("-1", Long.toString(chatMessage.getId()), holder.downvote, holder.txtVote);
             }
         });
 
         holder.upvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                vote("1", Long.toString(chatMessage.getId()), holder.upvote);
+                vote("1", Long.toString(chatMessage.getId()), holder.upvote, holder.txtVote);
             }
         });
+
+        holder.favourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vote("2", Long.toString(chatMessage.getId()), holder.favourite, holder.txtVote);
+            }
+        });
+
 
         return convertView;
     }
@@ -154,16 +171,17 @@ public class ChatAdapter extends BaseAdapter implements Constants{
         public TextView txtVote, timeStamp;
         Button upvote, downvote, favourite;
         ImageView tag1, tag2, tag3, tag4, tag5;
+
     }
 
 
     /**
      * Upload data to server
      */
-    public void vote(final String score, String msgId, final Button button) {
+    public void vote(final String score, String msgId, final Button button, final TextView textView) {
 
         // to fetch city names
-        String uri = API_LINK + "/message-vote/" + msgId + "/" + score;
+        String uri = API_LINK + "message-vote/" + msgId + "/" + score;
         Log.e("CALLING : ", uri);
 
         //Set up client
@@ -183,19 +201,24 @@ public class ChatAdapter extends BaseAdapter implements Constants{
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
 
-                final String res = response.body().string();
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
 
-                        if(score.equals("1")){
-
+                        Integer num = Integer.parseInt(textView.getText().toString());
+                        if (score.equals("1")) {
+                            num++;
                             button.setBackgroundResource(R.drawable.vote_up_active);
+                            textView.setText(Integer.toString(num));
+
+                        } else if (score.equals("-1")) {
+                            num--;
+                            button.setBackgroundResource(R.drawable.vote_down_active);
+                            textView.setText(Integer.toString(num));
 
                         } else {
 
-                            button.setBackgroundResource(R.drawable.vote_down_active);
-
+                            button.setBackgroundResource(R.drawable.favorite_icon_active);
                         }
 
                     }

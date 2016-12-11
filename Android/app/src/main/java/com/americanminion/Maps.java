@@ -53,13 +53,10 @@ import static android.content.ContentValues.TAG;
 
 public class Maps extends Fragment implements Constants, OnMapReadyCallback {
 
-
-    SwipeRefreshLayout swipeLayout;
     Double latitude, longitude;
     GoogleMap map;
     Place Splace, Dplace;
-    int PLACE_AUTOCOMPLETE_REQUEST_CODE_SOURCE = 1;
-    int PLACE_AUTOCOMPLETE_REQUEST_CODE_DESTINATION = 2;
+    int random;
 
     com.google.android.gms.maps.MapFragment mapFragment;
     private Handler mHandler;
@@ -168,6 +165,7 @@ public class Maps extends Fragment implements Constants, OnMapReadyCallback {
      */
     public void getDirections() {
 
+        map.clear();
 
         final String sorcelat = Double.toString(Splace.getLatLng().latitude),
                 sorcelon = Double.toString(Splace.getLatLng().longitude),
@@ -188,9 +186,15 @@ public class Maps extends Fragment implements Constants, OnMapReadyCallback {
                 sorcelat + "," + sorcelon + "&destination=" + deslat + "," + deslon +
                 "&key=" +
                 MAPS_KEY +
-                "&mode=driving\n";
+                "&mode=walking&alternatives=true";
 
         Log.e("CALLING : ", uri);
+
+
+        random = (int) (Splace.getLatLng().latitude + Splace.getLatLng().longitude +
+                Dplace.getLatLng().latitude + Dplace.getLatLng().longitude );
+
+
 
         //Set up client
         OkHttpClient client = new OkHttpClient();
@@ -213,27 +217,51 @@ public class Maps extends Fragment implements Constants, OnMapReadyCallback {
                     public void run() {
                         Log.e("RESPONSE : ", "Done");
                         try {
+
+
+
                             final JSONObject json = new JSONObject(res);
                             JSONArray routeArray = json.getJSONArray("routes");
-                            JSONObject routes = routeArray.getJSONObject(0);
-                            JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
-                            String encodedString = overviewPolylines.getString("points");
-                            List<LatLng> list = decodePoly(encodedString);
-                            Polyline line = map.addPolyline(new PolylineOptions()
-                                    .addAll(list)
-                                    .width(12)
-                                    .color(Color.parseColor("#05b1fb"))//Google maps blue color
-                                    .geodesic(true)
-                            );
 
-                            for (int z = 0; z < list.size() - 1; z++) {
-                                LatLng src = list.get(z);
-                                LatLng dest = list.get(z + 1);
-                                Polyline line2 = map.addPolyline(new PolylineOptions()
-                                        .add(new LatLng(src.latitude, src.longitude), new LatLng(dest.latitude, dest.longitude))
-                                        .width(2)
-                                        .color(Color.BLUE).geodesic(true));
+
+                            random = random % (routeArray.length());
+
+
+
+                            for(int j=0; j<routeArray.length(); j++) {
+
+                                String col = "#00bcd4";
+                                if(j==random){
+                                    col = "#4caf50";
+                                }
+
+
+
+                                JSONObject routes = routeArray.getJSONObject(j);
+                                JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
+                                String encodedString = overviewPolylines.getString("points");
+                                List<LatLng> list = decodePoly(encodedString);
+                                Polyline line = map.addPolyline(new PolylineOptions()
+                                        .addAll(list)
+                                        .width(12)
+                                        .color(Color.parseColor(col))//Google maps green color
+                                        .geodesic(true)
+                                );
+
+                                for (int z = 0; z < list.size() - 1; z++) {
+                                    LatLng src = list.get(z);
+                                    LatLng dest = list.get(z + 1);
+                                    Polyline line2 = map.addPolyline(new PolylineOptions()
+                                            .add(new LatLng(src.latitude, src.longitude), new LatLng(dest.latitude, dest.longitude))
+                                            .width(2)
+                                            .color(Color.BLUE).geodesic(true));
+                                }
+
+
+
                             }
+
+
                             progressDialog.hide();
                             LatLng coordinate = new LatLng(Double.parseDouble(sorcelat), Double.parseDouble(sorcelon));
                             CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
@@ -292,11 +320,11 @@ public class Maps extends Fragment implements Constants, OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
 
-        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         map.setMyLocationEnabled(true);
-        map.setTrafficEnabled(true);
-        map.setIndoorEnabled(true);
-        map.setBuildingsEnabled(true);
+        map.setTrafficEnabled(false);
+        map.setIndoorEnabled(false);
+        map.setBuildingsEnabled(false);
         map.getUiSettings().setZoomControlsEnabled(true);
 
 
