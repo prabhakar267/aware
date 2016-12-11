@@ -187,6 +187,18 @@ def gettoppriorities(number_of_messages):
 	return json.dumps(response_json)
 
 
+#####################
+# GREEN PATH ROUTES #
+#####################
+
+@app.route("/select-route", methods=["GET"])
+def selectroute():
+	# return json.dumps(get_current_stats())
+	return get_damage(28.6288, 77.2223), 200
+
+
+
+
 
 @app.route('/', methods=['GET'])
 def main():
