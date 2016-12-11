@@ -4,4 +4,14 @@
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#8BC34A</color>
     <color name="white">#FFFFFF</color>
+
+
+    <color name="level5">#bc2828</color>
+    <color name="level4">#cf8d12</color>
+    <color name="level3">#dcdc0f</color>
+    <color name="level2">#0f76cf</color>
+    <color name="level1">#2fce1e</color>
+
+
+
 </resources>

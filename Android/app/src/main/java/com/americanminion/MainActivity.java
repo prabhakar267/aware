@@ -28,6 +28,16 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
+        //Initially city fragment
+        Fragment fragment;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragment = new Home();
+        fragmentManager.beginTransaction().replace(R.id.inc, fragment).commit();
+
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -40,14 +50,6 @@ public class MainActivity extends AppCompatActivity
 
         if (!arePermissionsGiven())
             getPermissions();
-
-
-        //Initially city fragment
-        Fragment fragment;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragment = new Home();
-        fragmentManager.beginTransaction().replace(R.id.inc, fragment).commit();
-
 
     }
 
@@ -67,31 +69,30 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
+
         Fragment fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragment = new Home();
 
         if (id == R.id.nav_home) {
-
+            setTitle("Home");
             fragment = new Home();
 
         } else if (id == R.id.nav_news) {
-
+            setTitle("News");
             fragment = new News();
 
         } else if (id == R.id.nav_maps) {
-
+            setTitle("Maps");
             fragment = new Maps();
 
         } else if (id == R.id.nav_bulettin) {
-
+            setTitle("Bulletin Board");
             fragment = new Bulletin();
-
-        } else if (id == R.id.nav_share) {
-
-
-
-        } else if (id == R.id.nav_profile) {
 
         }
 

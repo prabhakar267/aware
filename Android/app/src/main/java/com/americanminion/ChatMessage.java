@@ -10,6 +10,9 @@ public class ChatMessage {
     private Long userId;
     private String dateTime;
     private String author;
+    private String tags;
+    private String votes;
+
 
     public long getId() {
         return id;
@@ -58,4 +61,14 @@ public class ChatMessage {
     public void setDate(String dateTime) {
         this.dateTime = dateTime;
     }
+
+    public String getVotes() {return votes;}
+
+    public void setVotes(String votes) { this.votes = votes; }
+
+
+    public String getTags() {return tags;}
+
+    public void setTags(String Tags) { this.tags = Tags; }
+
 }

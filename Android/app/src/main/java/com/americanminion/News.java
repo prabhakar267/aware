@@ -52,7 +52,7 @@ public class News extends Fragment implements Constants {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.content_news, container, false);
-        listView = (ListView) activity.findViewById(R.id.listView);
+        listView = (ListView) v.findViewById(R.id.listView);
         progress = new ProgressDialog(activity);
 
         // Hide keyboard
@@ -83,8 +83,7 @@ public class News extends Fragment implements Constants {
         progress.setMessage("Fetching latest news for you...");
         progress.show();
 
-        String uri = API_LINK +
-                "online-shopping.php?string=";
+        String uri = NEWS_API;
 
         Log.e("CALLING : ", uri);
 
@@ -112,7 +111,7 @@ public class News extends Fragment implements Constants {
                             JSONObject YTFeed = new JSONObject(String.valueOf(res));
 
 
-                            JSONArray YTFeedItems = YTFeed.getJSONArray("results");
+                            JSONArray YTFeedItems = YTFeed.getJSONArray("articles");
                             Log.e("response", YTFeedItems + " ");
 
                             if (YTFeedItems.length() == 0) {
@@ -182,17 +181,17 @@ public class News extends Fragment implements Constants {
 
 
             try {
-                String x = FeedItems.getJSONObject(position).getString("name");
+                String x = FeedItems.getJSONObject(position).getString("title");
                 x = Html.fromHtml(x).toString();
                 Title.setText(x);
 
 
-                String DescriptionText = FeedItems.getJSONObject(position).getString("value");
+                String DescriptionText = FeedItems.getJSONObject(position).getString("description");
 
                 DescriptionText = Html.fromHtml(DescriptionText).toString();
-                Description.setText(DescriptionText + " Rs");
+                Description.setText(DescriptionText);
 
-                Picasso.with(context).load(FeedItems.getJSONObject(position).getString("image")).into(iv);
+                Picasso.with(context).load(FeedItems.getJSONObject(position).getString("urlToImage")).into(iv);
 
             } catch (JSONException e) {
                 e.printStackTrace();

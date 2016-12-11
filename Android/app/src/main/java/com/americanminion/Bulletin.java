@@ -15,6 +15,9 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +25,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,17 +55,17 @@ public class Bulletin extends Fragment implements Constants{
 
     private EditText messageET;
     private ListView messagesContainer;
-    private Button sendBtn;
+    private Button sendBtn, tagBtn;
     private ChatAdapter adapter;
-    private ArrayList<ChatMessage> chatHistory;
     SharedPreferences s;
-    long  time;
     SharedPreferences.Editor e;
     String uid;
+    String curTags="";
     ProgressDialog progress;
 
     GPSTracker gpsTracker;
 
+    String tagsShow = "0";
     public Bulletin() {
     }
 
@@ -71,9 +76,12 @@ public class Bulletin extends Fragment implements Constants{
         View v = inflater.inflate(R.layout.content_chat, container, false);
         progress = new ProgressDialog(activity);
 
+        setHasOptionsMenu(true);
+
         messagesContainer = (ListView) v.findViewById(R.id.messagesContainer);
         messageET = (EditText) v.findViewById(R.id.messageEdit);
         sendBtn = (Button) v.findViewById(R.id.chatSendButton);
+        tagBtn = (Button) v.findViewById(R.id.chatTagsButton);
 
 
         // Hide keyboard
@@ -91,22 +99,51 @@ public class Bulletin extends Fragment implements Constants{
     private void initControls() {
 
         s = PreferenceManager.getDefaultSharedPreferences(activity);
-        e = s.edit();
         uid = s.getString(USER_ID, null);
 
         adapter = new ChatAdapter(activity, new ArrayList<ChatMessage>());
         messagesContainer.setAdapter(adapter);
 
-
         getChat();
+
+        tagBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MaterialDialog.Builder(activity)
+                        .title(R.string.title)
+                        .items(R.array.items)
+                        .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+
+                                curTags = "";
+
+                                for (int i = 0; i < which.length; i++) {
+                                    curTags = curTags + which[i];
+
+                                }
+
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.choose)
+                        .show();
+            }
+        });
+
+
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
                 String messageText = messageET.getText().toString();
                 if (TextUtils.isEmpty(messageText)) {
+                    return;
+                }
+
+                if(curTags.equals("")) {
+                    Toast.makeText(activity, "Select atleast one tag!", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -116,18 +153,6 @@ public class Bulletin extends Fragment implements Constants{
                 // displayMessage(chatMessage);
             }
         });
-
-
-        /*while(true) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                }
-            }, 10000);
-        }*/
-
-
-
 
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
@@ -156,6 +181,7 @@ public class Bulletin extends Fragment implements Constants{
      */
     public void getChat() {
 
+
         String lat,lon;
         gpsTracker = new GPSTracker(activity);
         if(gpsTracker.canGetLocation()){
@@ -168,13 +194,8 @@ public class Bulletin extends Fragment implements Constants{
         }
 
 
-        progress.setTitle("Please wait");
-        progress.setMessage("Logging In...");
-        progress.show();
-
-
         // to fetch city names
-        String uri = API_LINK +"get-message?"+ "user_id="+ uid + "&lat=" + lat + "&lon=" + lon + "&channel=random";
+        String uri = API_LINK +"get-message?"+ "user_id="+ uid + "&lat=" + lat + "&lon=" + lon + "&tags=" + tagsShow;
         Log.e("CALLING : ", uri);
 
         //Set up client
@@ -199,6 +220,10 @@ public class Bulletin extends Fragment implements Constants{
                     @Override
                     public void run() {
 
+
+                        adapter = new ChatAdapter(activity, new ArrayList<ChatMessage>());
+                        messagesContainer.setAdapter(adapter);
+
                         Log.e("result", res);
                         try {
 
@@ -209,14 +234,16 @@ public class Bulletin extends Fragment implements Constants{
                                 ob = arr.getJSONObject(i);
 
                                 ChatMessage chatMessage = new ChatMessage();
+
                                 chatMessage.setMessage(ob.getString("message"));
                                 chatMessage.setDate(ob.getString("timestamp"));
                                 chatMessage.setMe(false);
                                 chatMessage.setId(ob.getInt("id"));
                                 chatMessage.setAuthor(ob.getString("author"));
+                                chatMessage.setVotes(ob.getString("score"));
+                                chatMessage.setTags(ob.getString("tags"));
 
                                 Log.e("dispalyin",ob.getString("message"));
-
 
                                 displayMessage(chatMessage);
 
@@ -228,8 +255,6 @@ public class Bulletin extends Fragment implements Constants{
                             Toast.makeText(activity, "Some error occurred", Toast.LENGTH_LONG).show();
 
                         }
-                        progress.dismiss();
-
                     }
                 });
             }
@@ -255,7 +280,6 @@ public class Bulletin extends Fragment implements Constants{
         }
 
 
-
         progress.setTitle("Please wait");
         progress.setMessage("Sending message...");
         progress.show();
@@ -274,7 +298,7 @@ public class Bulletin extends Fragment implements Constants{
                 .addFormDataPart("lat", lat)
                 .addFormDataPart("lon", lon)
                 .addFormDataPart("user_id", uid)
-                .addFormDataPart("channel", "random")
+                .addFormDataPart("tags", curTags)
                 .build();
 
         //Execute request
@@ -351,5 +375,46 @@ public class Bulletin extends Fragment implements Constants{
         this.activity = (Activity) activity;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_sort) {
+
+            new MaterialDialog.Builder(activity)
+                    .title(R.string.title)
+                    .items(R.array.items)
+                    .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+
+                            tagsShow = "";
+
+                            for (int i = 0; i < which.length; i++) {
+                                tagsShow = tagsShow + which[i];
+
+                            }
+
+                            if(tagsShow.equals("")){
+                                tagsShow = "0";
+                            }
+
+                            getChat();
+                            return true;
+                        }
+                    })
+                    .positiveText(R.string.choose)
+                    .show();
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.bulettin_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
 }

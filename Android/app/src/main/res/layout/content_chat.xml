@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/inc"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -22,19 +23,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_toLeftOf="@+id/chatSendButton"
+                android:layout_toLeftOf="@+id/con"
                 android:autoText="true"
                 android:hint="Enter message" />
 
-            <Button
-                android:id="@+id/chatSendButton"
+            <LinearLayout
+                android:id="@+id/con"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:background="@color/colorPrimaryDark"
-                android:text=" Send "
-                android:textColor="@color/white" />
+                android:layout_alignParentRight="true">
+
+
+                <Button
+                    android:layout_margin="5dp"
+                    android:id="@+id/chatTagsButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:textStyle="bold"
+                    android:textSize="40sp"
+                    android:background="@color/white"
+                    android:text="#"
+                    android:textColor="@color/colorPrimary" />
+
+                <Button
+                    android:layout_margin="5dp"
+                    android:id="@+id/chatSendButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@android:drawable/ic_menu_send"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
 
             <ListView
                 android:id="@+id/messagesContainer"
@@ -45,7 +65,8 @@
                 android:layout_alignParentTop="false"
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="10dp"
-                android:divider="@null"
+                android:divider="@color/colorPrimary"
+                android:dividerHeight="1dp"
                 android:listSelector="@android:color/transparent"
                 android:transcriptMode="alwaysScroll" />
 
@@ -53,4 +74,4 @@
         </RelativeLayout>
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>
