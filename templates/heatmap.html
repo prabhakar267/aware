@@ -72,14 +72,16 @@ for(i=0;i<509;i++)
 
 
 $.ajax({
-  url: 'http://192.168.1.120:5000/get-all-messages',
+  url: 'http://localhost:5000/get-all-messages',
   dataType: 'json',
   success: function(r) {
     for (var i in r) {
       var obj = r[i];
       obj.lat = Math.round((obj.lat - min_lat)*1000);
       obj.lon = Math.round((obj.lon - min_long)*1000);
-      z_data[obj.lat][obj.lon] += obj.score + 10;
+
+      if(obj.lat > 0 && obj.lon > 0 && inside([obj.lon, obj.lat], polygon))
+          z_data[obj.lat][obj.lon] += obj.score;
     }
 
     var data = [{
@@ -89,7 +91,6 @@ $.ajax({
 
     var layout = {
       autosize: true,
-      width: 700,
       height: 700,
       margin: {
         l: 65,

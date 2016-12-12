@@ -67,4 +67,10 @@ def get_damage(latitude, longitude):
 		WHERE tags NOT LIKE %%5%% \
 		ORDER BY distance \
 		LIMIT 10" % (latitude, longitude)
-	return query
+
+	date_string = parsed_data[1] + ' ' + parsed_data[2]
+	date_obj = datetime.strptime(date_string, '%A, %B %d, %Y %X')
+	parsed_data[5] = date_obj.strftime("%Y-%m-%d %H:%M:%S")
+	response.append([parsed_data[0], parsed_data[3], parsed_data[4], parsed_data[5]])
+		
+	return data

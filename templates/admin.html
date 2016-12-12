@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}" />
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li>Dashboard</li>
+        <li>Clean Air Asia</li>
+      </ul>
+      <ul>
+        <li>Pollution Overview</li>
+        <li>
+          <ul>
+            <li class="pcc active" data-val="mm">Mandir Marg</li>
+            <li class="pcc" data-val="av">Anand Vihar</li>
+            <li class="pcc" data-val="rkPuram">R.K. Puram</li>
+            <li class="pcc" data-val="pb">Punjabi Bagh</li>
+            <li class="pcc" data-val="airpo">IGI Airport</li>
+            <li class="pcc" data-val="civilLines">Civil Lines</li>
+          </ul>
+        </li>
+        <li id="get-veted-content">Feedback Review</li>
+        <li></li>
+        <li><a href="http://localhost:5000/dashboard/heatmap" style="color:white; cursor:pointer">HeatMap</a></li>
+      </ul>
+    </nav>
+    <section id="container">
+      <div id="line-graph"><div>
+    </section>
+    <script>
+      $(function () {
+        Highcharts.chart('line-graph', {
+          title: {
+            text: 'Gas Concentrations at Mandir Marg',
+            x: -20 //center
+          },
+          subtitle: {
+            text: 'Source: DPCC',
+            x: -20
+          },
+          xAxis: {
+            categories: ['10 Dec 10:45', '10 Dec 11:00', '10 Dec 11:15', '10 Dec 11:30', '10 Dec 11:45', '10 Dec 12:00', '10 Dec 12:15', '10 Dec 12:30', '10 Dec 12:45', '10 Dec 13:00', '10 Dec 13:15', '10 Dec 13:30']
+          },
+          yAxis: {
+            title: {
+              text: 'µg/m3'
+            },
+            plotLines: [{
+              value: 0,
+              width: 1,
+              color: '#808080'
+            }]
+          },
+          tooltip: {
+            valueSuffix: ' µg/m3'
+          },
+          legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+          },
+          series: [{
+            name: 'Nitrogen Oxide',
+            data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+          }, {
+            name: 'Carbon Monoxide',
+            data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
+          }, {
+            name: 'Ozone',
+            data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
+          }, {
+            name: 'Benzene',
+            data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+          }]
+        });
+
+        $('#container').append('<div id="notifs"></div>')
+        $.ajax({
+          url: 'http://localhost:5000/get-top-priorities/3',
+          dataType: 'json',
+          success: function(r) {
+            console.log(r);
+            for (var i in r) {
+              $('#notifs').append('<div class="cards"><ul><li>' + r[i].author + '</li><li class="message">' + r[i].message + '</li><li class="geo">' + r[i].latitude + ' Lat ' + r[i].longitude + ' Long</li></ul><div class="btn">Mark Important</div></div>');
+            }
+
+          }
+        })
+      });
+
+    </script>
+  </body>
+</html>

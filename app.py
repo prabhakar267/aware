@@ -99,12 +99,12 @@ def getmessage():
 	if tag == 0:
 		query = "SELECT messages.id, messages.message, messages.score, messages.timestamp, users.name, messages.lat, messages.lon, messages.tags \
 			FROM `messages` INNER JOIN `users` ON messages.user_id = users.id \
-			ORDER BY messages.timestamp ASC"
+			ORDER BY messages.timestamp ASC LIMIT 30"
 	else:
 		query = "SELECT messages.id, messages.message, messages.score, messages.timestamp, users.name, messages.lat, messages.lon, messages.tags \
 			FROM `messages` INNER JOIN `users` ON messages.user_id = users.id \
 			WHERE messages.tags LIKE '%%%d%%' \
-			ORDER BY messages.timestamp ASC" % (tag)
+			ORDER BY messages.timestamp ASC LIMIT 30" % (tag)
 
 	cursor.execute(query)
 	row = cursor.fetchone()
@@ -250,6 +250,9 @@ def getallmessages():
 def testroute():
 	return render_template('heatmap.html')
 
+@app.route('/dashboard/', methods=["GET"])
+def dashboardindex():
+	return render_template('admin.html')
 
 #####################
 # GREEN PATH ROUTES #
