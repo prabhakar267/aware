@@ -1,7 +1,7 @@
 package com.americanminion;
 
 /**
- * Created by Technovibe on 17-04-2015.
+ * Created by swati garg on 17-04-2015.
  */
 public class ChatMessage {
     private long id;
