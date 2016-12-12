@@ -13,6 +13,7 @@ def dist_between_coord(x1,y1,x2,y2):
 def get_current_stats():
 	DATA_SOURCE_URL = 'http://www.dpccairdata.com/dpccairdata/display/mm'
 	LOCATION_NAME_FILE_POSTFIX = 'View15MinData.php'
+
 	response1_obj = temp_response_dpcc
 
 	response = []
@@ -54,23 +55,7 @@ def get_current_stats():
 		response.append([parsed_data[0], parsed_data[3], parsed_data[4], parsed_data[5]])
 
 	for pollutant in response:
-		# print pollutant[0] + "\t" + pollutant[1] + "\n\n\n\n"
 		response_obj[pollutant[0]] = pollutant[1]
 
 
 	return response1_obj
-
-
-def get_damage(latitude, longitude):
-	query = "SELECT lat, lon, SQRT( POW( 69.1 * ( lat - %f ) , 2 ) + POW( 69.1 * ( %f - lon ) * COS( lat / 57.3 ) , 2 ) ) AS distance \
-		FROM messages \
-		WHERE tags NOT LIKE %%5%% \
-		ORDER BY distance \
-		LIMIT 10" % (latitude, longitude)
-
-	date_string = parsed_data[1] + ' ' + parsed_data[2]
-	date_obj = datetime.strptime(date_string, '%A, %B %d, %Y %X')
-	parsed_data[5] = date_obj.strftime("%Y-%m-%d %H:%M:%S")
-	response.append([parsed_data[0], parsed_data[3], parsed_data[4], parsed_data[5]])
-		
-	return data

@@ -1,10 +1,10 @@
 import json
 import MySQLdb
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, render_template
 from flask_cors import CORS
 
 
-from utils import *
+from utils import dist_between_coord, get_current_stats
 from mysql_config import HOSTNAME, USERNAME, PASSWORD, DATABASE
 
 
@@ -22,12 +22,6 @@ cursor = db.cursor()
 
 
 FIXED_DISTANCE = 1000
-
-
-# import logging
-# log = logging.getLogger('werkzeug')
-# log.setLevel(logging.ERROR)
-
 
 
 ###############
@@ -254,16 +248,10 @@ def testroute():
 def dashboardindex():
 	return render_template('admin.html')
 
-#####################
-# GREEN PATH ROUTES #
-#####################
 
-# @app.route("/select-route", methods=["GET"])
-# def selectroute():
-# 	# return json.dumps(get_current_stats())
-# 	return get_damage(28.6288, 77.2223), 200
-
-
+##################
+# DEFAULT ROUTES #
+##################
 
 @app.route('/', methods=['GET'])
 def main():
