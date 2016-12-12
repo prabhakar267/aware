@@ -62,6 +62,8 @@ public class Bulletin extends Fragment implements Constants{
     String curTags="";
     ProgressDialog progress;
 
+    SharedPreferences sharedPreferences;
+    public String API_LINK;
     GPSTracker gpsTracker;
 
     String tagsShow = "0";
@@ -76,6 +78,9 @@ public class Bulletin extends Fragment implements Constants{
         progress = new ProgressDialog(activity);
 
         setHasOptionsMenu(true);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        API_LINK = sharedPreferences.getString(API_LINK_TEXT, "");
 
         messagesContainer = (ListView) v.findViewById(R.id.messagesContainer);
         messageET = (EditText) v.findViewById(R.id.messageEdit);

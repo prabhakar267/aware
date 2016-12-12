@@ -2,16 +2,21 @@ package com.americanminion;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +35,8 @@ public class Home extends Fragment implements Constants {
 
     Activity activity;
     private Handler mHandler;
+    SharedPreferences sharedPreferences;
+    public String API_LINK;
 
     public Home() {
     }
@@ -43,6 +50,29 @@ public class Home extends Fragment implements Constants {
         // Hide keyboard
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        API_LINK = sharedPreferences.getString(API_LINK_TEXT, "http://192.168.1.6:5000/");
+
+        WaveLoadingView waveLoadingView = (WaveLoadingView) v.findViewById(R.id.sulphur);
+        waveLoadingView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MaterialDialog.Builder(activity)
+                        .title("Enter IP")
+                        .content("for eg http://192.168.1.120:5000/")
+                        .inputType(InputType.TYPE_CLASS_TEXT)
+                        .input("for eg http://192.168.1.120:5000/", "", new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                // Do something
+                                sharedPreferences.
+                                        edit().
+                                        putString(API_LINK_TEXT, input.toString()).apply();
+                            }
+                        }).show();
+            }
+        });
 
         mHandler = new Handler(Looper.getMainLooper());
 

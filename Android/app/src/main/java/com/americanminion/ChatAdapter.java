@@ -2,8 +2,10 @@ package com.americanminion;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,16 +27,21 @@ import okhttp3.Response;
 /**
  * Created by Technovibe on 17-04-2015.
  */
-public class ChatAdapter extends BaseAdapter implements Constants {
+class ChatAdapter extends BaseAdapter implements Constants {
 
     private final List<ChatMessage> chatMessages;
     private Activity context;
     private Handler mHandler;
+    SharedPreferences sharedPreferences;
+    public String API_LINK;
 
-    public ChatAdapter(Activity context, List<ChatMessage> chatMessages) {
+
+    ChatAdapter(Activity context, List<ChatMessage> chatMessages) {
         this.context = context;
         this.chatMessages = chatMessages;
         mHandler = new Handler(Looper.getMainLooper());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        API_LINK = sharedPreferences.getString(API_LINK_TEXT, "");
     }
 
     @Override

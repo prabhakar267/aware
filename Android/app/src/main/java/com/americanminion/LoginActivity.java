@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,8 +17,11 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +46,10 @@ public class LoginActivity extends AppCompatActivity implements Constants{
     private EditText mPasswordView;
     private SharedPreferences mSharedPreferences;
     ProgressDialog progress;
+    SharedPreferences sharedPreferences;
+    public String API_LINK;
+    ImageView imageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +59,13 @@ public class LoginActivity extends AppCompatActivity implements Constants{
         mPhoneView = (EditText) findViewById(R.id.phone);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mPasswordView = (EditText) findViewById(R.id.password);
+        imageView = (ImageView) findViewById(R.id.imageView);
+
         progress = new ProgressDialog(this);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        API_LINK = sharedPreferences.getString(API_LINK_TEXT, "http://192.168.1.6:5000/");
+
 
         if(mSharedPreferences.getString(USER_ID, null) != null){
 
@@ -69,6 +83,27 @@ public class LoginActivity extends AppCompatActivity implements Constants{
                     return true;
                 }
                 return false;
+            }
+        });
+
+
+        imageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MaterialDialog.Builder(LoginActivity.this)
+                        .title("Enter IP")
+                        .content("for eg http://192.168.1.120:5000/")
+                        .inputType(InputType.TYPE_CLASS_TEXT)
+                        .input("for eg http://192.168.1.120:5000/", "", new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                // Do something
+                                sharedPreferences.
+                                        edit().
+                                        putString(API_LINK_TEXT, input.toString()).apply();
+                            }
+                        }).show();
+
             }
         });
 
