@@ -1,10 +1,16 @@
+import sys
+sys.path.append("..")
+
 import MySQLdb
 
+from mysql_config import HOSTNAME, USERNAME, PASSWORD, DATABASE
+
+
 db = MySQLdb.connect(
-	host="localhost",
-	user="root",
-	passwd="696163",
-	db="csinseew_clean_air"
+	host=HOSTNAME,
+	user=USERNAME,
+	passwd=PASSWORD,
+	db=DATABASE
 )
 cursor = db.cursor()
 
@@ -18,4 +24,3 @@ with open("names", "r") as f:
 		cursor.execute(query)
 		db.commit()
 		print name + "\n"
-	# print x
