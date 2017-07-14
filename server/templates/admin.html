@@ -31,7 +31,11 @@
       </ul>
     </nav>
     <section id="container">
-      <div id="line-graph"><div>
+      <div id="line-graph"></div>
+      <div id="input">
+        <label for="priorities">View the top </label><input id="priorities" type="number" name="priorities" size="2"><label for="priorities"> priorities</label><button id="getprioritiesbtn" onclick="getPriorities()">Submit</button>
+      </div>
+      <div id="notifs"></div>
     </section>
     <script>
       $(function () {
@@ -80,21 +84,24 @@
             data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
           }]
         });
-
-        $('#container').append('<div id="notifs"></div>')
-        $.ajax({
-          url: 'http://localhost:5000/get-top-priorities/3',
-          dataType: 'json',
-          success: function(r) {
-            console.log(r);
-            for (var i in r) {
-              $('#notifs').append('<div class="cards"><ul><li>' + r[i].author + '</li><li class="message">' + r[i].message + '</li><li class="geo">' + r[i].latitude + ' Lat ' + r[i].longitude + ' Long</li></ul><div class="btn">Mark Important</div></div>');
-            }
-
-          }
-        })
       });
 
+      function getPriorities(){
+        $('#notifs').html("");
+        var numPriorities = $('#priorities').val()
+        if(numPriorities && !isNaN(numPriorities)){
+          $.ajax({
+            url: 'http://localhost:5000/get-top-priorities/'+$('#priorities').val(),
+            dataType: 'json',
+            success: function(r) {
+              console.log(r);
+              for (var i in r) {
+                $('#notifs').append('<div class="cards"><ul><li>' + r[i].author + '</li><li class="message">' + r[i].message + '</li><li class="geo">' + r[i].latitude + ' Lat ' + r[i].longitude + ' Long</li></ul><div class="btn">Mark Important</div></div>');
+              }
+            }
+          });
+        }
+      }
     </script>
   </body>
 </html>

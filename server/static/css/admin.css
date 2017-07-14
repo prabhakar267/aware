@@ -81,6 +81,20 @@ nav>ul:last-child>li:nth-child(even)>ul>li:hover {
   cursor: pointer;
 }
 
+#input {
+  padding-top: 50px;
+  padding-left: 50px;
+}
+
+#priorities {
+  width: 40px;
+}
+
+#getprioritiesbtn { 
+  margin-left: 10px;
+  font-family: Roboto, "sans-serif"
+}
+
 .cards {
   position: relative;
   padding: 50px;
