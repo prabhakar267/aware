@@ -109,7 +109,6 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/post_image"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_below="@id/postText"
@@ -208,7 +207,6 @@
                     android:focusable="false" />
 
                 <TextView
-                    android:id="@+id/favoritesCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
