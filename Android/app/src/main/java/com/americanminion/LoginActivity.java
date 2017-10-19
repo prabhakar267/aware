@@ -166,6 +166,7 @@ public class LoginActivity extends AppCompatActivity implements Constants{
 
         progress.setTitle("Please wait");
         progress.setMessage("Logging In...");
+        progress.setCanceledOnTouchOutside(false);
         progress.show();
 
         // to fetch city names
