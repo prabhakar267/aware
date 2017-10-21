@@ -23,9 +23,9 @@ python app.py
 | Path | Request Type | Accepted Parameters | Response Type |
 |---|---|---|---|
 | ```/``` | GET | None | HTML |
-|```/add-user``` | GET | **name** : string <br / > **password** : string | JSON |
-|```/add-message``` | POST | **user_id** : integer <br / > **lon** : float <br / > **lan** : float <br / > **message** : string <br / > **tags** : list | JSON |
-|```/get-message``` | GET | **lat** : float <br /> **lon** : float <br /> **tag** : list | JSON |
+|```/add-user``` | GET | **name** : string <br/> **password** : string | JSON |
+|```/add-message``` | POST | **user_id** : integer <br/> **lon** : float <br/> **lan** : float <br/> **message** : string <br/> **tags** : list | JSON |
+|```/get-message``` | GET | **lat** : float <br/> **lon** : float <br/> **tag** : list | JSON |
 |```/message-vote/<message_id>/<score>``` | GET | None | JSON |
 |```/current-index``` | GET | None | JSON |
 |```/get-top-priorities/<number_of_messages>``` | GET | None | JSON |
