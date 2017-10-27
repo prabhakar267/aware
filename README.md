@@ -8,7 +8,7 @@ The authorities need to only act on the messages which are most concerning; givi
 ## Using Bulletin Board data
 The data received by the platform can be used for a lot of purposes. Some being:
  + Giving a pictorial representation of data reinforced on the 3D map of Delhi, showing the areas with most concerns for picking up trends.
- + Showing the "greenest" route between 2 places as opposed to "shortest" or "fastest" as suggested by Google Maps
+ + Showing the "greenest" route between 2 places as opposed to "shortest" or "fastest" as suggested by Google Maps.
 
 ## Screenshots
 <img src="/Screenshot/bulettin-show-posts.png" width="200px" />
@@ -19,7 +19,7 @@ The data received by the platform can be used for a lot of purposes. Some being:
 
 
 
-## Data Souces, APIs and Tools used
+## Data Sources, APIs and Tools used
  + [Delhi Pollution Control Committee website](http://www.dpccairdata.com/dpccairdata/display/mmView15MinData.php)
  + [Plotly JS](https://plot.ly/javascript/)
  + [News API](https://newsapi.org/)
