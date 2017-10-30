@@ -1,21 +1,26 @@
 # Aware (Server)
 ## Setup
+First, clone the repo
 ```bash
 git clone https://github.com/prabhakar267/aware.git && cd aware/server
 ```
+Create a Python 2.7 virtual environment and activate it
 ```bash
 pip install virtualenv
 virtualenv venv
 source venv/bin/activate
 ```
+Install all of the Python 2.7 dependencies
 ```
 [sudo] pip install -r requirements.txt
 ```
-+ Edit [mysql_config.py.sample](mysql_config.py.sample) according to your MySQL configurations
++ Edit [mysql_config.py.sample](mysql_config.py.sample) according to your MySQL configurations and rename it to mysql_config.py
 + Open your MySQL console / MySQL administration tool (like [phpMyAdmin](https://www.phpmyadmin.net/)) and import the [database dump](database/schema.sql)
+Run the development server, which defaults to port 5000
 ```
 python app.py
 ```
+Visit the homepage  
 **Open ```localhost:5000```**
 
 ## Available Routes
