@@ -1,4 +1,4 @@
-# Aware
+# Aware [Deprecated - Not maintained anymore]
 > Platform for people to raise their opinions and concerns related to environment and pollution in their locality. Aware uses this data to access the "cleanliness", "greenery" and  "livability" of areas.
 
 ## How Aware works
@@ -23,9 +23,3 @@ The data received by the platform can be used for a lot of purposes. Some being:
  + [Delhi Pollution Control Committee website](http://www.dpccairdata.com/dpccairdata/display/mmView15MinData.php)
  + [Plotly JS](https://plot.ly/javascript/)
  + [News API](https://newsapi.org/)
-
-
-## Project Maintainers
- + **[Prabhakar Gupta](mailto:prabhakargupta267@gmail.com)**
- + **[Swati Garg](mailto:swati.garg.nsit@gmail.com)**
- + **[Mayank Badola](mailto:badola21295@gmail.com)**
