@@ -6,7 +6,7 @@ After you install the app, you can post any message along with the proper tags a
 The authorities only have to act on the messages which are most concerning, rather than going through each post.
 
 ## Using Bulletin Board data
-The data received by the platform can be used for a lot of purposes. Some being:
+The data received by the platform can be used for a lot of purposes. Some being :-
  + Giving a pictorial representation of data reinforced on the 3D map of Delhi, showing the areas with most concerns for picking up trends.
  + Showing the "greenest" route between 2 places as opposed to "shortest" or "fastest" as suggested by Google Maps.
 
