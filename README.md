@@ -23,3 +23,6 @@ The data received by the platform can be used for a lot of purposes. Some being:
  + [Delhi Pollution Control Committee website](http://www.dpccairdata.com/dpccairdata/display/mmView15MinData.php)
  + [Plotly JS](https://plot.ly/javascript/)
  + [News API](https://newsapi.org/)
+
+
+Readme should have clearer instalation instructions.
